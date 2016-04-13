@@ -1,15 +1,12 @@
 package deaktator.proto
 
-import com.google.protobuf.GeneratedMessage
-import com.google.protobuf.Descriptors.Descriptor
-import com.google.protobuf.ByteString
-import com.google.protobuf.ExtensionRegistryLite
-import com.google.protobuf.CodedInputStream
+import java.io.InputStream
 
+import com.google.protobuf.Descriptors.Descriptor
+import com.google.protobuf.{ByteString, CodedInputStream, ExtensionRegistryLite, GeneratedMessage}
 import org.apache.commons.codec.binary.Base64
 
 import scala.reflect.macros.blackbox
-import java.io.InputStream
 
 /**
   * Created by ryan on 4/12/16.

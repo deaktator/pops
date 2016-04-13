@@ -1,19 +1,12 @@
 package deaktator.proto
 
-import com.google.protobuf.GeneratedMessage
-import org.apache.commons.codec.binary.Base64
+import java.io.{IOException, InputStream}
+
+import com.google.protobuf.Descriptors.Descriptor
+import com.google.protobuf.{ByteString, CodedInputStream, ExtensionRegistryLite, GeneratedMessage, InvalidProtocolBufferException}
 
 import scala.annotation.implicitNotFound
 import scala.language.experimental.macros
-import scala.util.Try
-
-import com.google.protobuf.ByteString
-import com.google.protobuf.InvalidProtocolBufferException
-import com.google.protobuf.Descriptors.Descriptor
-import com.google.protobuf.ExtensionRegistryLite
-import com.google.protobuf.CodedInputStream
-import java.io.InputStream
-import java.io.IOException
 
 /**
   * Created by ryan on 4/11/16.
@@ -72,6 +65,5 @@ object ProtoOps {
     * @return
     */
   def runtime[A <: GeneratedMessage](c: Class[A]): ProtoOps[A] = RuntimeProtoOps(c)
-
 }
 
