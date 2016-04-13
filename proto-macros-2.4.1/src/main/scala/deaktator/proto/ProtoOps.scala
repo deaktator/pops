@@ -7,12 +7,54 @@ import scala.annotation.implicitNotFound
 import scala.language.experimental.macros
 import scala.util.Try
 
+import com.google.protobuf.ByteString
+import com.google.protobuf.InvalidProtocolBufferException
+import com.google.protobuf.Descriptors.Descriptor
+import com.google.protobuf.ExtensionRegistryLite
+import com.google.protobuf.CodedInputStream
+import java.io.InputStream
+import java.io.IOException
+
 /**
   * Created by ryan on 4/11/16.
   */
 @implicitNotFound(msg = "Cannot find ProtoOps type class for ${A}.")
 trait ProtoOps[A <: GeneratedMessage] {
   def parseFromB64(s: String): A
+
+  def getDefaultInstance(): A
+
+  def getDescriptor(): Descriptor
+
+  @throws(classOf[InvalidProtocolBufferException])
+  def parseFrom(data: ByteString ): A
+
+  @throws(classOf[InvalidProtocolBufferException])
+  def parseFrom(data: ByteString, extensionRegistry: ExtensionRegistryLite): A
+
+  @throws(classOf[InvalidProtocolBufferException])
+  def parseFrom(data: Array[Byte]): A
+
+  @throws(classOf[InvalidProtocolBufferException])
+  def parseFrom(data: Array[Byte], extensionRegistry: ExtensionRegistryLite): A
+
+  @throws(classOf[IOException])
+  def parseFrom(input: InputStream): A
+
+  @throws(classOf[IOException])
+  def parseFrom(input: InputStream, extensionRegistry: ExtensionRegistryLite): A
+
+  @throws(classOf[IOException])
+  def parseDelimitedFrom(input: InputStream): A
+
+  @throws(classOf[IOException])
+  def parseDelimitedFrom(input: InputStream, extensionRegistry: ExtensionRegistryLite): A
+
+  @throws(classOf[IOException])
+  def parseFrom(input: CodedInputStream): A
+
+  @throws(classOf[IOException])
+  def parseFrom(input: CodedInputStream, extensionRegistry: ExtensionRegistryLite): A
 }
 
 object ProtoOps {
@@ -31,10 +73,5 @@ object ProtoOps {
     */
   def runtime[A <: GeneratedMessage](c: Class[A]): ProtoOps[A] = RuntimeProtoOps(c)
 
-  private[this] case class RuntimeProtoOps[A <: GeneratedMessage](messageClass: Class[A]) extends ProtoOps[A] {
-    override def parseFromB64(s: String): A = {
-      messageClass.getMethod("parseFrom", classOf[Array[Byte]]).invoke(null, Base64.decodeBase64(s)).asInstanceOf[A]
-    }
-  }
 }
 
