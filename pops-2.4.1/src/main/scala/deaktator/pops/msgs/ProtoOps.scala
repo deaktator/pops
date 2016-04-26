@@ -15,8 +15,6 @@ import scala.language.implicitConversions
   */
 @implicitNotFound(msg = "Cannot find ProtoOps type class for ${A}.")
 trait ProtoOps[A <: GeneratedMessage] {
-  def parseFromB64(s: String): A
-
   def getDefaultInstance(): A
 
   def getDescriptor(): Descriptor

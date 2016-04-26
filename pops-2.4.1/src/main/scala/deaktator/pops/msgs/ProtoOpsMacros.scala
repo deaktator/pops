@@ -4,7 +4,6 @@ import java.io.InputStream
 
 import com.google.protobuf.Descriptors.Descriptor
 import com.google.protobuf.{ByteString, CodedInputStream, ExtensionRegistryLite, GeneratedMessage}
-import org.apache.commons.codec.binary.Base64
 
 import scala.reflect.macros.blackbox
 
@@ -31,7 +30,6 @@ class ProtoOpsMacros(val c: blackbox.Context) {
     val protoOps = weakTypeOf[ProtoOps[A]]
     val serializable = weakTypeOf[Serializable]
     val proto = a.companion
-    val b64 = weakTypeOf[Base64].companion
 
     val descriptor = weakTypeOf[Descriptor]
     val byteString = weakTypeOf[ByteString]
@@ -41,7 +39,6 @@ class ProtoOpsMacros(val c: blackbox.Context) {
 
     c.Expr[ProtoOps[A]] {
       q"""new $protoOps with $serializable {
-            def parseFromB64(s: String): $a = $proto.parseFrom($b64.decodeBase64(s))
             def getDefaultInstance(): $a = $proto.getDefaultInstance()
             def getDescriptor(): $descriptor = $proto.getDescriptor()
             def parseFrom(data: $byteString): $a = $proto.parseFrom(data)

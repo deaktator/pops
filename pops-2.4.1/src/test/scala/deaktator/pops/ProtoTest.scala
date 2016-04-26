@@ -6,14 +6,13 @@ import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.Scores.Score.{ModelId, ScoreError}
 import com.google.protobuf.GeneratedMessage
 import deaktator.pops.msgs.ProtoOps
-import org.apache.commons.codec.binary.Base64
 import org.scalatest._
 
 import scala.collection.JavaConversions.collectionAsScalaIterable
 
 
 /**
-  * Created by ryan on 4/11/16.
+  * @author deaktator
   */
 class ProtoTest extends FlatSpec with Matchers {
   import ProtoTest._
@@ -25,10 +24,11 @@ class ProtoTest extends FlatSpec with Matchers {
   "Macro ProtoOps instances" should "operate the same as runtime ProtoOps instances" in {
     val macroOps = ProtoOps[Score]
     val runtimeOps = ProtoOps.runtime(classOf[Score])
-    val b64 = encoded(someNonDefaultUserProto)
 
-    val m = macroOps.parseFromB64(b64)
-    val r = runtimeOps.parseFromB64(b64)
+    val bytes = someNonDefaultProto.toByteArray
+
+    val m = macroOps.parseFrom(bytes)
+    val r = runtimeOps.parseFrom(bytes)
 
     m should be (r)
   }
@@ -42,15 +42,15 @@ class ProtoTest extends FlatSpec with Matchers {
   }
 
   they should "be able to deserialize Protos" in {
-    assertSomeNonDefaultProtoIsCorrect(Proto[Score].parseFromB64(encoded(someNonDefaultUserProto)))
+    assertSomeNonDefaultProtoIsCorrect(Proto[Score].parseFrom(someNonDefaultProto.toByteArray))
   }
 
   they should "be able to be generated and passed around implicitly" in {
-    assertSomeNonDefaultProtoIsCorrect(new Converter[Score].decodeB64(encoded(someNonDefaultUserProto)))
+    assertSomeNonDefaultProtoIsCorrect(new Converter[Score].decode(someNonDefaultProto.toByteArray))
   }
 
   they should "be at least as fast than runtime-based ProtoOps instances" in {
-    val b64 = encoded(someNonDefaultUserProto)
+    val bytes = someNonDefaultProto.toByteArray
     var i = 0
     var sum = 0L
 
@@ -59,7 +59,7 @@ class ProtoTest extends FlatSpec with Matchers {
 
     val (sR, tR) = time {
       while(i < n) {
-        sum += runtimeProtoOps.parseFromB64(b64).getError.getModel.getId
+        sum += runtimeProtoOps.parseFrom(bytes).getError.getModel.getId
         i += 1
       }
       sum
@@ -70,7 +70,7 @@ class ProtoTest extends FlatSpec with Matchers {
 
     val (sM, tM) = time {
       while(i < n) {
-        sum += Proto[Score].parseFromB64(b64).getError.getModel.getId
+        sum += runtimeProtoOps.parseFrom(bytes).getError.getModel.getId
         i += 1
       }
       sum
@@ -88,7 +88,7 @@ class ProtoTest extends FlatSpec with Matchers {
     oos.close()
     val ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
     val deser = ois.readObject().asInstanceOf[ProtoOps[Score]]
-    val s: Score = deser.parseFromB64(encoded(someNonDefaultUserProto))
+    val s: Score = deser.parseFrom(someNonDefaultProto.toByteArray)
     ois.close()
     assertSomeNonDefaultProtoIsCorrect(s)
   }
@@ -102,7 +102,7 @@ class ProtoTest extends FlatSpec with Matchers {
 
 object ProtoTest {
   class Converter[A <: GeneratedMessage](implicit ops: ProtoOps[A]) {
-    def decodeB64(s: String): A = ops.parseFromB64(s)
+    def decode(a: Array[Byte]): A = ops.parseFrom(a)
   }
 
   def time[A](a: => A) = {
@@ -112,10 +112,8 @@ object ProtoTest {
     (r, (1.0e-9*(t2 - t1)).toFloat)
   }
 
-  def someNonDefaultUserProto: Score = {
+  def someNonDefaultProto: Score = {
     val m = ModelId.newBuilder.setId(1).setName("model")
     Score.newBuilder().setError(ScoreError.newBuilder.setModel(m).addMessages("fail")).build()
   }
-
-  def encoded[A <: GeneratedMessage](a: A) = new String(Base64.encodeBase64(a.toByteArray))
 }

@@ -4,7 +4,6 @@ import java.io.{IOException, InputStream}
 
 import com.google.protobuf.Descriptors.Descriptor
 import com.google.protobuf.{ByteString, CodedInputStream, ExtensionRegistryLite, GeneratedMessage, InvalidProtocolBufferException}
-import org.apache.commons.codec.binary.Base64
 
 /**
   * A Runtime-based version of [[ProtoOps]].  This really should be used unless necessary.  For instance,
@@ -13,9 +12,6 @@ import org.apache.commons.codec.binary.Base64
   * companion object.
   */
 private[pops] final case class RuntimeProtoOps[A <: GeneratedMessage](messageClass: Class[A]) extends ProtoOps[A] {
-  def parseFromB64(s: String): A =
-    messageClass.getMethod("parseFrom", classOf[Array[Byte]]).invoke(null, Base64.decodeBase64(s)).asInstanceOf[A]
-
   def getDefaultInstance(): A =
     messageClass.getMethod("getDefaultInstance").invoke(null).asInstanceOf[A]
 
