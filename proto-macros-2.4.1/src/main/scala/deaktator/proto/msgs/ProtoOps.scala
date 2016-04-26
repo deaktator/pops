@@ -1,15 +1,17 @@
-package deaktator.proto
+package deaktator.proto.msgs
 
 import java.io.{IOException, InputStream}
 
 import com.google.protobuf.Descriptors.Descriptor
-import com.google.protobuf.{ByteString, CodedInputStream, ExtensionRegistryLite, GeneratedMessage, InvalidProtocolBufferException}
+import com.google.protobuf._
 
 import scala.annotation.implicitNotFound
 import scala.language.experimental.macros
+import scala.language.implicitConversions
 
 /**
-  * Created by ryan on 4/11/16.
+  * A type class for static methods present in `com.google.protobuf.GeneratedMessage`.
+  * @author deaktator
   */
 @implicitNotFound(msg = "Cannot find ProtoOps type class for ${A}.")
 trait ProtoOps[A <: GeneratedMessage] {
@@ -20,7 +22,7 @@ trait ProtoOps[A <: GeneratedMessage] {
   def getDescriptor(): Descriptor
 
   @throws(classOf[InvalidProtocolBufferException])
-  def parseFrom(data: ByteString ): A
+  def parseFrom(data: ByteString): A
 
   @throws(classOf[InvalidProtocolBufferException])
   def parseFrom(data: ByteString, extensionRegistry: ExtensionRegistryLite): A
@@ -50,10 +52,16 @@ trait ProtoOps[A <: GeneratedMessage] {
   def parseFrom(input: CodedInputStream, extensionRegistry: ExtensionRegistryLite): A
 }
 
+/**
+  * Provides factory methods and implicit materializer macros to Get class instances.
+  * @author deaktator
+  */
 object ProtoOps {
+
   /**
-    * Materialize a ProtoOps[A] using macros
-    * @tparam A type of the generated message to create.
+    * Materialize a `ProtoOps[A]` using macros.  This is the one of the two prefered ways to
+    * get one an instance of [[ProtoOps]].  The other is using [[deaktator.proto.Proto.apply]].
+    * @tparam A type of the `GeneratedMessage` for which a type class should be materialized.
     * @return
     */
   implicit def apply[A <: GeneratedMessage]: ProtoOps[A] = macro ProtoOpsMacros.materialize[A]

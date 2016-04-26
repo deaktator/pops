@@ -1,4 +1,4 @@
-package deaktator.proto
+package deaktator.proto.msgs
 
 import java.io.InputStream
 
@@ -9,7 +9,18 @@ import org.apache.commons.codec.binary.Base64
 import scala.reflect.macros.blackbox
 
 /**
-  * Created by ryan on 4/12/16.
+  * A [[http://docs.scala-lang.org/overviews/macros/overview.html macro-based]] [[ProtoOps]] implementation
+  * that uses implicit materialization. All that needs to be done to use it is to request an instance via
+  * {{{
+  * import com.google.protobuf.GeneratedMessage
+  * import deaktator.proto.msgs.ProtoOps
+  * import com.eharmony.aloha.score.Scores.Score // Or some other PB instance.
+  * val myInstance: ProtoOps[Score]
+  *
+  * // or include it as an implicit parameter in a function or class
+  * def getDefault[A <: GeneratedMessage](implicit ops: ProtoOps[A]): A = ops.getDefaultInstance()
+  * }}}
+  * @author deaktator
   */
 @macrocompat.bundle
 class ProtoOpsMacros(val c: blackbox.Context) {
@@ -17,6 +28,8 @@ class ProtoOpsMacros(val c: blackbox.Context) {
     import c.universe._
 
     val a = weakTypeOf[A]
+    val protoOps = weakTypeOf[ProtoOps[A]]
+    val serializable = weakTypeOf[Serializable]
     val proto = a.companion
     val b64 = weakTypeOf[Base64].companion
 
@@ -27,7 +40,7 @@ class ProtoOpsMacros(val c: blackbox.Context) {
     val inputStream = weakTypeOf[InputStream]
 
     c.Expr[ProtoOps[A]] {
-      q"""new ProtoOps[$a] with Serializable {
+      q"""new $protoOps with $serializable {
             def parseFromB64(s: String): $a = $proto.parseFrom($b64.decodeBase64(s))
             def getDefaultInstance(): $a = $proto.getDefaultInstance()
             def getDescriptor(): $descriptor = $proto.getDescriptor()

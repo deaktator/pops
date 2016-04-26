@@ -1,4 +1,4 @@
-package deaktator.proto
+package deaktator.proto.msgs
 
 import java.io.{IOException, InputStream}
 
@@ -6,10 +6,11 @@ import com.google.protobuf.Descriptors.Descriptor
 import com.google.protobuf.{ByteString, CodedInputStream, ExtensionRegistryLite, GeneratedMessage, InvalidProtocolBufferException}
 import org.apache.commons.codec.binary.Base64
 
-
-
 /**
-  * Created by ryan on 4/13/16.
+  * A Runtime-based version of [[ProtoOps]].  This really should be used unless necessary.  For instance,
+  * if calling `Class.forName` isn't necessary, this should really be either.  In which case, the preferable
+  * way to get a [[ProtoOps]] instance is implicitly via the implicit factory method in the [[ProtoOps]]
+  * companion object.
   */
 private[proto] final case class RuntimeProtoOps[A <: GeneratedMessage](messageClass: Class[A]) extends ProtoOps[A] {
   def parseFromB64(s: String): A =

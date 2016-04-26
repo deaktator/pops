@@ -5,30 +5,12 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, 
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.Scores.Score.{ModelId, ScoreError}
 import com.google.protobuf.GeneratedMessage
+import deaktator.proto.msgs.ProtoOps
 import org.apache.commons.codec.binary.Base64
 import org.scalatest._
 
 import scala.collection.JavaConversions.collectionAsScalaIterable
 
-object ProtoTest {
-  class Converter[A <: GeneratedMessage](implicit ops: ProtoOps[A]) {
-    def decodeB64(s: String): A = ops.parseFromB64(s)
-  }
-
-  def time[A](a: => A) = {
-    val t1 = System.nanoTime()
-    val r = a
-    val t2 = System.nanoTime()
-    (r, (1.0e-9*(t2 - t1)).toFloat)
-  }
-
-  def someNonDefaultUserProto: Score = {
-    val m = ModelId.newBuilder.setId(1).setName("model")
-    Score.newBuilder().setError(ScoreError.newBuilder.setModel(m).addMessages("fail")).build()
-  }
-
-  def encoded[A <: GeneratedMessage](a: A) = new String(Base64.encodeBase64(a.toByteArray))
-}
 
 /**
   * Created by ryan on 4/11/16.
@@ -51,7 +33,7 @@ class ProtoTest extends FlatSpec with Matchers {
     m should be (r)
   }
 
-  "Macro ProtoOps instances" should "be instantiable explicitly" in {
+  they should "be instantiable explicitly" in {
     Proto[Score].isInstanceOf[ProtoOps[Score]] should be (true)
   }
 
@@ -109,7 +91,6 @@ class ProtoTest extends FlatSpec with Matchers {
     val s: Score = deser.parseFromB64(encoded(someNonDefaultUserProto))
     ois.close()
     assertSomeNonDefaultProtoIsCorrect(s)
-
   }
 
   def assertSomeNonDefaultProtoIsCorrect(p: Score): Unit = {
@@ -117,4 +98,24 @@ class ProtoTest extends FlatSpec with Matchers {
     p.getError.getModel.getName should be ("model")
     p.getError.getMessagesList.toList should be (List("fail"))
   }
+}
+
+object ProtoTest {
+  class Converter[A <: GeneratedMessage](implicit ops: ProtoOps[A]) {
+    def decodeB64(s: String): A = ops.parseFromB64(s)
+  }
+
+  def time[A](a: => A) = {
+    val t1 = System.nanoTime()
+    val r = a
+    val t2 = System.nanoTime()
+    (r, (1.0e-9*(t2 - t1)).toFloat)
+  }
+
+  def someNonDefaultUserProto: Score = {
+    val m = ModelId.newBuilder.setId(1).setName("model")
+    Score.newBuilder().setError(ScoreError.newBuilder.setModel(m).addMessages("fail")).build()
+  }
+
+  def encoded[A <: GeneratedMessage](a: A) = new String(Base64.encodeBase64(a.toByteArray))
 }
