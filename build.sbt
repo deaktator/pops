@@ -1,46 +1,10 @@
 name := "pops"
 
-// homepage := Some(url("https://github.com/deaktator/pops"))
-// 
-// licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
-// 
-// description := """library for easily turning expressions into functions"""
-// 
-// publishTo := {
-//   val nexus = "https://oss.sonatype.org/"
-//   if (isSnapshot.value)
-//     Some("snapshots" at nexus + "content/repositories/snapshots")
-//   else
-//     Some("releases" at nexus + "service/local/staging/deploy/maven2")
-// }
-// 
-// publishMavenStyle := true
+homepage := Some(url("https://github.com/deaktator/pops"))
 
-// publishArtifact in Test := false
+licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
 
-// pomIncludeRepository := { _ => false }
-
-// pomExtra := (
-//      <url>https://github.com/deaktator/pops</url>
-//      <licenses>
-//        <license>
-//          <name>MIT License</name>
-//          <url>http://opensource.org/licenses/MIT</url>
-//          <distribution>repo</distribution>
-//        </license>
-//      </licenses>
-//      <scm>
-//        <url>git@github.com:deaktator/pops</url>
-//        <connection>scm:git:git@github.com:deaktator/pops.git</connection>
-//      </scm>
-//      <developers>
-//        <developer>
-//          <id>deaktator</id>
-//          <name>R M Deak</name>
-//          <url>https://deaktator.github.io</url>
-//        </developer>
-//      </developers>
-//  )
+description := """Pops (protobuf ops) makes it easier (and faster) to generically work with Protocol Buffers."""
 
 lazy val commonSettings = Seq(
   organization := "com.github.deaktator",
@@ -104,19 +68,81 @@ lazy val pops241 = project.in( file("pops-2.4.1") ).
   settings (
     name := "pops-241",
 
-    // Because 2.10 runtime reflection is not thread-safe, tests fail non-deterministically.
-    // This is a hack to make tests pass by not allowing the tests to run in parallel.
-    parallelExecution in Test := false,
+    // Because 2.10 runtime reflection is not thread-safe, tests relying on scala
+    // reflection can fail non-deterministically.  Uncheck to disallow tests to
+    // run in parallel.
+//    parallelExecution in Test := false,
 
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "macro-compat" % "1.1.1" % "provided",
        compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-  
+
+      "org.typelevel" %% "macro-compat" % "1.1.1" % "provided",
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided",
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+
       "com.google.protobuf" % "protobuf-java" % "2.4.1",
-      "commons-codec" % "commons-codec" % "1.4",
+
+      // TEST dependencies
       "com.eharmony" % "aloha-proto" % "2.0.0" % "test",
       "org.scalatest" %% "scalatest" % "2.2.6" % "test"
     )
   )
+
+// ===========================   PUBLISHING   ===========================
+
+//publishTo := {
+//  val nexus = "https://oss.sonatype.org/"
+//  if (isSnapshot.value)
+//    Some("snapshots" at nexus + "content/repositories/snapshots")
+//  else
+//    Some("releases" at nexus + "service/local/staging/deploy/maven2")
+//}
+//
+//publishMavenStyle := true
+//
+//publishArtifact in Test := false
+//
+//pomIncludeRepository := { _ => false }
+
+sonatypeProfileName := "com.github.deaktator"
+
+pomExtra in Global := (
+  <url>https://github.com/deaktator/pops</url>
+    <licenses>
+      <license>
+        <name>MIT License</name>
+        <url>http://opensource.org/licenses/MIT</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
+    <scm>
+      <url>git@github.com:deaktator/pops</url>
+      <developerConnection>scm:git:git@github.com:deaktator/pops.git</developerConnection>
+      <connection>scm:git:git@github.com:deaktator/pops.git</connection>
+    </scm>
+    <developers>
+      <developer>
+        <id>deaktator</id>
+        <name>R M Deak</name>
+        <url>https://deaktator.github.io</url>
+      </developer>
+    </developers>
+  )
+
+
+import ReleaseTransformations._
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  ReleaseStep(action = Command.process("publishSigned", _), enableCrossBuild = true),
+  setNextVersion,
+  commitNextVersion,
+  ReleaseStep(action = Command.process("sonatypeReleaseAll", _), enableCrossBuild = true),
+  pushChanges
+)
