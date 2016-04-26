@@ -4,12 +4,14 @@ import com.google.protobuf.Descriptors.{EnumDescriptor, EnumValueDescriptor}
 import com.google.protobuf.Internal.EnumLiteMap
 import com.google.protobuf.ProtocolMessageEnum
 
+import scala.annotation.implicitNotFound
 import scala.language.experimental.macros
 
 /**
   * A type class for static methods present in `com.google.protobuf.ProtocolMessageEnum`.
   * @author deaktator
   */
+@implicitNotFound(msg = "Cannot find EnumProtoOps type class for ${A}.")
 trait EnumProtoOps[A <: ProtocolMessageEnum] {
   def getDescriptor(): EnumDescriptor
   def internalGetValueMap(): EnumLiteMap[A]
