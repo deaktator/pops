@@ -1,4 +1,4 @@
-# Pops
+# Pops [![Build Status](https://travis-ci.org/deaktator/pops.svg?branch=master)](https://travis-ci.org/deaktator/pops) #
 
 [Pops](https://github.com/deaktator/pops) (Protocol Buffer Ops) makes working generically with protocol buffers
 a simpler (and faster) experience.  
