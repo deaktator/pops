@@ -49,7 +49,7 @@ class ProtoTest extends FlatSpec with Matchers {
     assertSomeNonDefaultProtoIsCorrect(new Converter[Score].decodeB64(encoded(someNonDefaultUserProto)))
   }
 
-  they should "be at least twice as fast than runtime-based ProtoOps instances" in {
+  they should "be at least as fast than runtime-based ProtoOps instances" in {
     val b64 = encoded(someNonDefaultUserProto)
     var i = 0
     var sum = 0L
@@ -78,7 +78,7 @@ class ProtoTest extends FlatSpec with Matchers {
 
     sM should be (n)
     sR should be (n)
-    tM should be < (tR / 2)
+    tM should be < (tR)
   }
 
   def checkSerializable(ops: ProtoOps[Score]): Unit = {
