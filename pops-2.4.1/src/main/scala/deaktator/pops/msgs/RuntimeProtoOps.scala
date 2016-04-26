@@ -1,4 +1,4 @@
-package deaktator.proto.msgs
+package deaktator.pops.msgs
 
 import java.io.{IOException, InputStream}
 
@@ -12,7 +12,7 @@ import org.apache.commons.codec.binary.Base64
   * way to get a [[ProtoOps]] instance is implicitly via the implicit factory method in the [[ProtoOps]]
   * companion object.
   */
-private[proto] final case class RuntimeProtoOps[A <: GeneratedMessage](messageClass: Class[A]) extends ProtoOps[A] {
+private[pops] final case class RuntimeProtoOps[A <: GeneratedMessage](messageClass: Class[A]) extends ProtoOps[A] {
   def parseFromB64(s: String): A =
     messageClass.getMethod("parseFrom", classOf[Array[Byte]]).invoke(null, Base64.decodeBase64(s)).asInstanceOf[A]
 

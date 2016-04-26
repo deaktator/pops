@@ -1,10 +1,10 @@
-package deaktator.proto.fn
+package deaktator.pops.fn
 
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType.{BOOLEAN, BYTE_STRING, DOUBLE, ENUM, FLOAT, INT, LONG, MESSAGE, STRING}
 import com.google.protobuf.Descriptors.{EnumValueDescriptor, FieldDescriptor}
 import com.google.protobuf.{ByteString, GeneratedMessage, ProtocolMessageEnum}
-import deaktator.proto.enums.EnumProtoOps
-import deaktator.proto.msgs.ProtoOps
+import deaktator.pops.enums.EnumProtoOps
+import deaktator.pops.msgs.ProtoOps
 
 /**
   * A caster takes the untyped value returned by the PB reflection APIs and provides a
@@ -38,7 +38,7 @@ sealed trait Caster[A <: GeneratedMessage, B] extends Serializable {
 }
 
 // TODO: When B is covariant, need lower priority implicits.
-private[proto] object Caster extends Serializable {
+private[pops] object Caster extends Serializable {
 
   type GM = GeneratedMessage
   type PME = ProtocolMessageEnum
@@ -77,7 +77,7 @@ private[proto] object Caster extends Serializable {
   private[this] def req[A <: GM, B](fds: FieldDescriptor.JavaType*): Caster[A, B] = Req[A, B](Set(fds:_*))
   private[this] def opt[A <: GM, B](fds: FieldDescriptor.JavaType*): Caster[A, Option[B]] = Opt[A, B](Set(fds:_*))
 
-  private[proto] def wrongType(fds: ::[FieldDescriptor], acceptable: Set[FieldDescriptor.JavaType]): Option[String] = {
+  private[pops] def wrongType(fds: ::[FieldDescriptor], acceptable: Set[FieldDescriptor.JavaType]): Option[String] = {
     val fd = fds.last
     val t = fd.getJavaType
     if (acceptable contains t)
@@ -85,7 +85,7 @@ private[proto] object Caster extends Serializable {
     else Option(s"${fd.getFullName} is wrong type.  Found $t, expected one of ${acceptable.mkString("{", ", ", "}")}.")
   }
 
-  private[proto] def notEnum(fds: ::[FieldDescriptor]): Option[String] = {
+  private[pops] def notEnum(fds: ::[FieldDescriptor]): Option[String] = {
     val fd = fds.last
     val t = fd.getJavaType
     if (ENUM == t)
@@ -93,22 +93,22 @@ private[proto] object Caster extends Serializable {
     else Option(s"${fd.getFullName} is not an enum.  Found $t.")
   }
 
-  private[proto] def notRequired(fds: ::[FieldDescriptor]): Option[String] =
+  private[pops] def notRequired(fds: ::[FieldDescriptor]): Option[String] =
     fds.find(fd => !fd.isRequired).map(fd => s"${fd.getFullName} is not a required field. ProtoAccessor output type should be an Option." )
 
-  private[proto] def notOptional(fds: ::[FieldDescriptor]): Option[String] =
+  private[pops] def notOptional(fds: ::[FieldDescriptor]): Option[String] =
     fds.find(fd => !(fd.isRequired || fd.isOptional)).map(fd => s"${fd.getFullName} is not an optional or required field." )
 
-  private[proto] def addPath(path: String, msg: Option[String]) =
+  private[pops] def addPath(path: String, msg: Option[String]) =
     msg map (_ + s"""  Path: "$path".""")
 
-  private[proto] case class ReqEnum[A <: GM, B <: PME](implicit private val epo: EnumProtoOps[B]) extends Caster[A, B] {
+  private[pops] case class ReqEnum[A <: GM, B <: PME](implicit private val epo: EnumProtoOps[B]) extends Caster[A, B] {
     override def cast(hasField: Boolean, value: Any): B = epo.valueOf(value.asInstanceOf[EnumValueDescriptor])
     override def error(path: String, fds: ::[FieldDescriptor])(implicit ops: ProtoOps[A]): Option[String] =
       addPath(path, notRequired(fds) orElse notEnum(fds))
   }
 
-  private[proto] case class OptEnum[A <: GM, B <: PME](implicit private val epo: EnumProtoOps[B]) extends Caster[A, Option[B]] {
+  private[pops] case class OptEnum[A <: GM, B <: PME](implicit private val epo: EnumProtoOps[B]) extends Caster[A, Option[B]] {
     override def cast(hasField: Boolean, value: Any): Option[B] =
       if (hasField)
         Option(value) flatMap {
@@ -121,7 +121,7 @@ private[proto] object Caster extends Serializable {
       addPath(path, notOptional(fds) orElse notEnum(fds))
   }
 
-  private[proto] case class Req[A <: GM, B](validTypes: Set[FieldDescriptor.JavaType]) extends Caster[A, B] {
+  private[pops] case class Req[A <: GM, B](validTypes: Set[FieldDescriptor.JavaType]) extends Caster[A, B] {
     override def cast(hasField: Boolean, value: Any): B = value.asInstanceOf[B]
     override def error(path: String, fds: ::[FieldDescriptor])(implicit ops: ProtoOps[A]): Option[String] =
       addPath(path, notRequired(fds) orElse wrongType(fds, validTypes))

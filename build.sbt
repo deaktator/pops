@@ -1,6 +1,6 @@
-name := "proto-macros"
+name := "pops"
 
-// homepage := Some(url("https://github.com/deaktator/proto-macros"))
+// homepage := Some(url("https://github.com/deaktator/pops"))
 // 
 // licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
 // 
@@ -21,7 +21,7 @@ name := "proto-macros"
 // pomIncludeRepository := { _ => false }
 
 // pomExtra := (
-//      <url>https://github.com/deaktator/proto-macros</url>
+//      <url>https://github.com/deaktator/pops</url>
 //      <licenses>
 //        <license>
 //          <name>MIT License</name>
@@ -30,8 +30,8 @@ name := "proto-macros"
 //        </license>
 //      </licenses>
 //      <scm>
-//        <url>git@github.com:deaktator/proto-macros</url>
-//        <connection>scm:git:git@github.com:deaktator/proto-macros.git</connection>
+//        <url>git@github.com:deaktator/pops</url>
+//        <connection>scm:git:git@github.com:deaktator/pops.git</connection>
 //      </scm>
 //      <developers>
 //        <developer>
@@ -95,14 +95,14 @@ packagedArtifacts :=  Map()
 
 lazy val root = project.in( file(".") ).
   // To run benchmarks with tests, add 'bench' to the aggregate list
-  aggregate(protoMacros241).
+  aggregate(pops241).
   settings(commonSettings: _*).
   settings ()
 
-lazy val protoMacros241 = project.in( file("proto-macros-2.4.1") ).
+lazy val pops241 = project.in( file("pops-2.4.1") ).
   settings(commonSettings: _*).
   settings (
-    name := "proto-macros-241",
+    name := "pops-241",
 
     // Because 2.10 runtime reflection is not thread-safe, tests fail non-deterministically.
     // This is a hack to make tests pass by not allowing the tests to run in parallel.

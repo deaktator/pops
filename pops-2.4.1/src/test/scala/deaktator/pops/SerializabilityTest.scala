@@ -1,4 +1,4 @@
-package deaktator.proto
+package deaktator.pops
 
 import java.io.{ObjectInputStream, ByteArrayInputStream, ObjectOutputStream, ByteArrayOutputStream}
 

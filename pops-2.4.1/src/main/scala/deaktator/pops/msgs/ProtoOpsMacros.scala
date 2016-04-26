@@ -1,4 +1,4 @@
-package deaktator.proto.msgs
+package deaktator.pops.msgs
 
 import java.io.InputStream
 

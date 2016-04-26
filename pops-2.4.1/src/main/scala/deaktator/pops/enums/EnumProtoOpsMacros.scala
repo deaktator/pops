@@ -1,4 +1,4 @@
-package deaktator.proto.enums
+package deaktator.pops.enums
 
 import com.google.protobuf.Descriptors.{EnumDescriptor, EnumValueDescriptor}
 import com.google.protobuf.Internal.EnumLiteMap

@@ -1,11 +1,11 @@
-package deaktator.proto
+package deaktator.pops
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
 
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.Scores.Score.{ModelId, ScoreError}
 import com.google.protobuf.GeneratedMessage
-import deaktator.proto.msgs.ProtoOps
+import deaktator.pops.msgs.ProtoOps
 import org.apache.commons.codec.binary.Base64
 import org.scalatest._
 

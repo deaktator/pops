@@ -1,4 +1,4 @@
-package deaktator.proto.enums
+package deaktator.pops.enums
 
 import com.google.protobuf.Descriptors.{EnumDescriptor, EnumValueDescriptor}
 import com.google.protobuf.Internal.EnumLiteMap
@@ -11,7 +11,7 @@ import com.google.protobuf.ProtocolMessageEnum
   * the [[EnumProtoOps]] companion object.
   * @author deaktator
   */
-private[proto] final case class RuntimeEnumProtoOps[A <: ProtocolMessageEnum](enumClass: Class[A]) extends EnumProtoOps[A] {
+private[pops] final case class RuntimeEnumProtoOps[A <: ProtocolMessageEnum](enumClass: Class[A]) extends EnumProtoOps[A] {
   def getDescriptor(): EnumDescriptor =
     enumClass.getMethod("getDescriptor").invoke(null).asInstanceOf[EnumDescriptor]
   def internalGetValueMap(): EnumLiteMap[A] =

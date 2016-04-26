@@ -1,10 +1,10 @@
-package deaktator.proto.fn
+package deaktator.pops.fn
 
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType
 import com.eharmony.aloha.score.Scores.Score._
 import com.google.protobuf.GeneratedMessage
-import deaktator.proto.SerializabilityTest
+import deaktator.pops.SerializabilityTest
 import org.scalatest.{FlatSpec, Matchers}
 
 

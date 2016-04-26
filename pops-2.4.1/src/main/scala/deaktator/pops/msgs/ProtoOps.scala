@@ -1,4 +1,4 @@
-package deaktator.proto.msgs
+package deaktator.pops.msgs
 
 import java.io.{IOException, InputStream}
 
@@ -60,7 +60,7 @@ object ProtoOps {
 
   /**
     * Materialize a `ProtoOps[A]` using macros.  This is the one of the two prefered ways to
-    * get one an instance of [[ProtoOps]].  The other is using [[deaktator.proto.Proto.apply]].
+    * get one an instance of [[ProtoOps]].  The other is using [[deaktator.pops.Proto.apply]].
     * @tparam A type of the `GeneratedMessage` for which a type class should be materialized.
     * @return
     */

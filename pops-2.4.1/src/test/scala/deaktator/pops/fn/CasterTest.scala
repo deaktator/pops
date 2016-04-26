@@ -1,7 +1,7 @@
-package deaktator.proto.fn
+package deaktator.pops.fn
 
 import com.eharmony.aloha.score.Scores.Score
-import deaktator.proto.SerializabilityTest
+import deaktator.pops.SerializabilityTest
 import org.scalatest.{Matchers, FlatSpec}
 
 /**

@@ -1,11 +1,11 @@
-package deaktator.proto.fn
+package deaktator.pops.fn
 
 import java.io._
 
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType.MESSAGE
 import com.google.protobuf.Descriptors.{Descriptor, FieldDescriptor}
 import com.google.protobuf.GeneratedMessage
-import deaktator.proto.msgs.ProtoOps
+import deaktator.pops.msgs.ProtoOps
 
 import scala.annotation.tailrec
 import scala.language.implicitConversions
@@ -89,7 +89,7 @@ object ProtoAccessor {
     * Attempt to create a protobuf accessor: `Right(ProtoAccessor[A, B])`.  If an error is encountered
     * Left will contain the error message.
     * @param path the path string
-    * @param ops an instance of [[deaktator.proto.msgs.ProtoOps]] to help with accessor function creation.
+    * @param ops an instance of [[deaktator.pops.msgs.ProtoOps]] to help with accessor function creation.
     * @param c a caster that takes the untyped value returned by the PB reflection APIs and provides
     *          a typesafe value.
     * @tparam A type of `GeneratedMessage` from which data should be extracted.
@@ -103,7 +103,7 @@ object ProtoAccessor {
     * Attempt to create a protobuf accessor: `Some(ProtoAccessor[A, B])`.  If an error is encountered
     * None is returned.  This doesn't provide diagnostic information like [[ProtoAccessor.either]] does.
     * @param path the path string
-    * @param ops an instance of [[deaktator.proto.msgs.ProtoOps]] to help with accessor function creation.
+    * @param ops an instance of [[deaktator.pops.msgs.ProtoOps]] to help with accessor function creation.
     * @param c a caster that takes the untyped value returned by the PB reflection APIs and provides
     *          a typesafe value.
     * @tparam A type of `GeneratedMessage` from which data should be extracted.
@@ -125,7 +125,7 @@ object ProtoAccessor {
     * @tparam B type of data to be extracted from `A`.
     * @return an accessor on the right or an error message on the left.
     */
-  @tailrec private[proto] def buildProtoAccessor[A <: GeneratedMessage, B](
+  @tailrec private[pops] def buildProtoAccessor[A <: GeneratedMessage, B](
       pathStr: String,
       path: List[String],
       fds: List[FieldDescriptor],
@@ -165,7 +165,7 @@ object ProtoAccessor {
     * @param path the path string to split into
     * @return
     */
-  private[proto] def splitPath(path: String): List[String] =
+  private[pops] def splitPath(path: String): List[String] =
     // Can't use WrappedString method `nonEmpty` because of multiple implicit issue.  Use length > 0.
     path.split("""\.""").foldRight(List.empty[String]){(s, l) =>
       val t = s.trim
