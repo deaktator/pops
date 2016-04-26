@@ -15,4 +15,3 @@ The code is designed to use compile-time reflection ([macros](http://docs.scala-
 type class for working with [`com.google.protobuf.GeneratedMessage`](https://developers.google.com/protocol-buffers/docs/reference/java/com/google/protobuf/GeneratedMessage)s.
 - [EnumProtoOps](https://github.com/deaktator/pops/blob/master/pops-2.4.1/src/main/scala/deaktator/pops/enums/EnumProtoOps.scala): a type class for working with [`com.google.protobuf.ProtocolMessageEnum`](https://developers.google.com/protocol-buffers/docs/reference/java/com/google/protobuf/ProtocolMessageEnum)s.
 - [ProtoAccessor](https://github.com/deaktator/pops/blob/master/pops-2.4.1/src/main/scala/deaktator/pops/fn/ProtoAccessor.scala) a trait extending [`scala.Function1`](http://www.scala-lang.org/api/current/index.html#scala.Function1) that can be created from a string-based path into the *PB* instance.
-
