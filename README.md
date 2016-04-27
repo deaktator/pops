@@ -1,4 +1,4 @@
-# Pops [![Build Status](https://travis-ci.org/deaktator/pops.svg?branch=master)](https://travis-ci.org/deaktator/pops) #
+# Pops [![Build Status](https://travis-ci.org/deaktator/pops.svg?branch=master)](https://travis-ci.org/deaktator/pops) [[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.deaktator/pops-241_2.10/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.deaktator/pops-241_2.10)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.deaktator%22) #
 
 [Pops](https://github.com/deaktator/pops) (Protocol Buffer Ops) makes working generically with protocol buffers
 a simpler (and faster) experience.  
