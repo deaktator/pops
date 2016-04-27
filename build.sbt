@@ -8,7 +8,6 @@ description := """Pops (protobuf ops) makes it easier (and faster) to genericall
 
 lazy val commonSettings = Seq(
   organization := "com.github.deaktator",
-  version := "0.0.1-SNAPSHOT",
   scalaVersion := "2.11.6",
   crossScalaVersions := Seq("2.11.6", "2.10.5"),
   crossPaths := true,
