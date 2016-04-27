@@ -117,6 +117,8 @@ pomExtra in Global := (
 
 import ReleaseTransformations._
 
+releaseCrossBuild := true
+
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
