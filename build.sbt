@@ -8,8 +8,8 @@ description := """Pops (protobuf ops) makes it easier (and faster) to genericall
 
 lazy val commonSettings = Seq(
   organization := "com.github.deaktator",
-  scalaVersion := "2.11.6",
-  crossScalaVersions := Seq("2.11.6", "2.10.5"),
+  scalaVersion := "2.11.7",
+  crossScalaVersions := Seq("2.11.7", "2.10.6"),
   crossPaths := true,
   incOptions := incOptions.value.withNameHashing(true),
   javacOptions ++= Seq("-Xlint:unchecked"),
@@ -22,7 +22,7 @@ lazy val commonSettings = Seq(
     "-deprecation",
     "-feature",
     "-Yinline",
-    "-Yinline-warnings",
+//    "-Yinline-warnings", // Eliminate inline warnings from in scala library.
     "-Yclosure-elim",
     "-Ydead-code",
     "-Xverify",
@@ -75,7 +75,7 @@ lazy val pops241 = project.in( file("pops-2.4.1") ).
     libraryDependencies ++= Seq(
        compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
 
-      "org.typelevel" %% "macro-compat" % "1.1.1" % "provided",
+      "org.typelevel" %% "macro-compat" % "1.1.1",
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided",
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
 
@@ -88,20 +88,6 @@ lazy val pops241 = project.in( file("pops-2.4.1") ).
   )
 
 // ===========================   PUBLISHING   ===========================
-
-//publishTo := {
-//  val nexus = "https://oss.sonatype.org/"
-//  if (isSnapshot.value)
-//    Some("snapshots" at nexus + "content/repositories/snapshots")
-//  else
-//    Some("releases" at nexus + "service/local/staging/deploy/maven2")
-//}
-//
-//publishMavenStyle := true
-//
-//publishArtifact in Test := false
-//
-//pomIncludeRepository := { _ => false }
 
 sonatypeProfileName := "com.github.deaktator"
 
