@@ -3,7 +3,7 @@ package deaktator.pops.msgs
 import java.io.{IOException, InputStream}
 
 import com.google.protobuf.Descriptors.Descriptor
-import com.google.protobuf.{ByteString, CodedInputStream, ExtensionRegistryLite, GeneratedMessage, InvalidProtocolBufferException}
+import com.google.protobuf._
 
 /**
   * A Runtime-based version of [[ProtoOps]].  This really should be used unless necessary.  For instance,
@@ -11,12 +11,12 @@ import com.google.protobuf.{ByteString, CodedInputStream, ExtensionRegistryLite,
   * way to get a [[ProtoOps]] instance is implicitly via the implicit factory method in the [[ProtoOps]]
   * companion object.
   */
-private[pops] final case class RuntimeProtoOps[A <: GeneratedMessage](messageClass: Class[A]) extends ProtoOps[A] {
+private[pops] sealed trait RuntimeProtoLiteOps[A] extends ProtoLiteOps[A] {
+
+  protected val messageClass: Class[A]
+
   def getDefaultInstance(): A =
     messageClass.getMethod("getDefaultInstance").invoke(null).asInstanceOf[A]
-
-  def getDescriptor(): Descriptor =
-    messageClass.getMethod("getDescriptor").invoke(null).asInstanceOf[Descriptor]
 
   @throws(classOf[InvalidProtocolBufferException])
   def parseFrom(data: ByteString): A =
@@ -62,4 +62,15 @@ private[pops] final case class RuntimeProtoOps[A <: GeneratedMessage](messageCla
   def parseFrom(input: CodedInputStream, extensionRegistry: ExtensionRegistryLite): A =
     messageClass.getMethod("parseFrom", classOf[CodedInputStream], classOf[ExtensionRegistryLite]).
                  invoke(null, input, extensionRegistry).asInstanceOf[A]
+}
+
+private[pops] final case class RuntimeProtoLiteOpsImpl[A](protected val messageClass: Class[A])
+extends RuntimeProtoLiteOps[A]
+
+private[pops] final case class RuntimeProtoOps[A <: GeneratedMessage](protected val messageClass: Class[A])
+extends ProtoOps[A]
+   with RuntimeProtoLiteOps[A] {
+
+  def getDescriptor(): Descriptor =
+    messageClass.getMethod("getDescriptor").invoke(null).asInstanceOf[Descriptor]
 }

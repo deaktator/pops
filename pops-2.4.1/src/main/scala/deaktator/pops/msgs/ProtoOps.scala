@@ -14,40 +14,8 @@ import scala.language.implicitConversions
   * @author deaktator
   */
 @implicitNotFound(msg = "Cannot find ProtoOps type class for ${A}.")
-trait ProtoOps[A <: GeneratedMessage] {
-  def getDefaultInstance(): A
-
+trait ProtoOps[A] extends ProtoLiteOps[A] {
   def getDescriptor(): Descriptor
-
-  @throws(classOf[InvalidProtocolBufferException])
-  def parseFrom(data: ByteString): A
-
-  @throws(classOf[InvalidProtocolBufferException])
-  def parseFrom(data: ByteString, extensionRegistry: ExtensionRegistryLite): A
-
-  @throws(classOf[InvalidProtocolBufferException])
-  def parseFrom(data: Array[Byte]): A
-
-  @throws(classOf[InvalidProtocolBufferException])
-  def parseFrom(data: Array[Byte], extensionRegistry: ExtensionRegistryLite): A
-
-  @throws(classOf[IOException])
-  def parseFrom(input: InputStream): A
-
-  @throws(classOf[IOException])
-  def parseFrom(input: InputStream, extensionRegistry: ExtensionRegistryLite): A
-
-  @throws(classOf[IOException])
-  def parseDelimitedFrom(input: InputStream): A
-
-  @throws(classOf[IOException])
-  def parseDelimitedFrom(input: InputStream, extensionRegistry: ExtensionRegistryLite): A
-
-  @throws(classOf[IOException])
-  def parseFrom(input: CodedInputStream): A
-
-  @throws(classOf[IOException])
-  def parseFrom(input: CodedInputStream, extensionRegistry: ExtensionRegistryLite): A
 }
 
 /**
